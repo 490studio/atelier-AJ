@@ -1,0 +1,1213 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0D0B08">
+<title>Atelier by AJ · Ana Jasso</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0D0B08;
+    --bg2: #161410;
+    --bg3: #1E1B16;
+    --ink: #0D0B08;
+    --gold: #C9A84C;
+    --gold-dim: rgba(201,168,76,0.12);
+    --gold-border: rgba(201,168,76,0.25);
+    --rust: #B5482A;
+    --rust-dim: rgba(181,72,42,0.12);
+    --rust-border: rgba(181,72,42,0.28);
+    --cream: #F2EAD8;
+    --t1: #F2EAD8;
+    --t2: rgba(242,234,216,0.55);
+    --t3: rgba(242,234,216,0.25);
+    --border: rgba(242,234,216,0.07);
+    --radius: 4px;
+    --radius-lg: 12px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    font-family: 'Jost', sans-serif;
+    background: var(--bg);
+    color: var(--t1);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background:
+      radial-gradient(ellipse at 20% 0%, rgba(201,168,76,0.07) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 100%, rgba(181,72,42,0.05) 0%, transparent 40%);
+    pointer-events: none; z-index: 0;
+  }
+
+  #app { position: relative; z-index: 1; }
+
+  /* SPLASH */
+  #splash {
+    position: fixed; inset: 0; z-index: 100;
+    background: var(--bg);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 48px 28px;
+    transition: opacity .7s ease, transform .7s ease;
+  }
+  #splash.out { opacity: 0; transform: scale(.98); pointer-events: none; }
+
+  .splash-brush {
+    width: 60px; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin-bottom: 28px;
+    animation: brushStroke 2s ease-in-out infinite;
+  }
+  @keyframes brushStroke {
+    0%,100% { width: 40px; opacity: .5; }
+    50% { width: 80px; opacity: 1; }
+  }
+
+  .splash-by {
+    font-size: 11px; font-weight: 300;
+    letter-spacing: .35em; text-transform: uppercase;
+    color: var(--t3); margin-bottom: 6px;
+  }
+  .splash-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 52px; font-weight: 400;
+    font-style: italic;
+    color: var(--cream); letter-spacing: .02em;
+    text-align: center; line-height: 1;
+    margin-bottom: 4px;
+  }
+  .splash-aj {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px; font-weight: 400;
+    letter-spacing: .3em; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 6px;
+  }
+  .splash-sub {
+    font-size: 12px; font-weight: 200;
+    letter-spacing: .15em; color: var(--t3);
+    text-align: center; margin-bottom: 40px;
+  }
+  .splash-categories {
+    display: flex; gap: 10px; flex-wrap: wrap;
+    justify-content: center; margin-bottom: 36px;
+  }
+  .sc-pill {
+    font-size: 10px; font-weight: 300;
+    letter-spacing: .12em; text-transform: uppercase;
+    background: var(--gold-dim);
+    border: 1px solid var(--gold-border);
+    color: var(--gold);
+    padding: 5px 12px; border-radius: 20px;
+  }
+  .splash-btn {
+    background: transparent;
+    border: 1px solid var(--gold-border);
+    color: var(--gold);
+    font-family: 'Jost', sans-serif;
+    font-size: 11px; font-weight: 400;
+    letter-spacing: .2em; text-transform: uppercase;
+    padding: 14px 36px; cursor: pointer;
+    transition: background .2s, color .2s;
+    margin-bottom: 12px;
+  }
+  .splash-btn:active { background: var(--gold-dim); }
+  .splash-note { font-size: 11px; color: var(--t3); letter-spacing: .06em; }
+
+  /* Header */
+  .header {
+    background: rgba(13,11,8,0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 20px;
+    display: flex; align-items: center; gap: 12px;
+    position: sticky; top: 0; z-index: 10;
+  }
+  .h-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px; font-style: italic;
+    color: var(--cream);
+  }
+  .h-aj { color: var(--gold); font-style: normal; }
+  .h-sub { font-size: 10px; color: var(--t3); letter-spacing: .1em; text-transform: uppercase; margin-top: 2px; }
+  .h-cta {
+    margin-left: auto;
+    background: transparent;
+    border: 1px solid var(--gold-border);
+    color: var(--gold);
+    font-family: 'Jost', sans-serif;
+    font-size: 10px; font-weight: 400;
+    letter-spacing: .15em; text-transform: uppercase;
+    padding: 7px 14px; cursor: pointer;
+    text-decoration: none; white-space: nowrap;
+    flex-shrink: 0; transition: background .15s;
+  }
+  .h-cta:active { background: var(--gold-dim); }
+
+  /* Hero */
+  .hero {
+    padding: 36px 20px 28px;
+    border-bottom: 1px solid var(--border);
+  }
+  .hero-label {
+    font-size: 10px; font-weight: 300;
+    letter-spacing: .2em; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 14px;
+  }
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 40px; font-weight: 400; font-style: italic;
+    color: var(--cream); line-height: 1.15;
+    margin-bottom: 10px;
+  }
+  .hero-title span { color: var(--gold); font-style: normal; }
+  .hero-sub {
+    font-size: 13px; font-weight: 200;
+    color: var(--t2); line-height: 1.8;
+    margin-bottom: 22px;
+  }
+  .hero-stats {
+    display: grid; grid-template-columns: repeat(3,1fr);
+    border: 1px solid var(--border);
+    overflow: hidden; border-radius: var(--radius-lg);
+  }
+  .hs {
+    padding: 14px 8px; text-align: center;
+    border-right: 1px solid var(--border);
+    background: var(--bg2);
+  }
+  .hs:last-child { border-right: none; }
+  .hs-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px; color: var(--gold);
+  }
+  .hs-label { font-size: 10px; color: var(--t3); margin-top: 3px; letter-spacing: .06em; }
+
+  /* Filter tabs */
+  .filter-wrap {
+    display: flex; gap: 0;
+    overflow-x: auto; scrollbar-width: none;
+    border-bottom: 1px solid var(--border);
+    padding: 0 20px;
+  }
+  .filter-wrap::-webkit-scrollbar { display: none; }
+  .filter-btn {
+    flex-shrink: 0; padding: 14px 16px;
+    font-family: 'Jost', sans-serif;
+    font-size: 10px; font-weight: 400;
+    letter-spacing: .15em; text-transform: uppercase;
+    color: var(--t3); background: transparent;
+    border: none; border-bottom: 1px solid transparent;
+    cursor: pointer; transition: all .2s; white-space: nowrap;
+    margin-bottom: -1px;
+  }
+  .filter-btn.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+  /* Gallery */
+  .gallery { padding: 20px; }
+  .gallery-grid { display: none; flex-direction: column; gap: 12px; }
+  .gallery-grid.active { display: flex; }
+
+  /* Artwork card */
+  .artwork-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    cursor: pointer;
+    transition: border-color .2s;
+  }
+  .artwork-card:active { border-color: rgba(242,234,216,0.15); }
+  .artwork-card.sold { opacity: .6; }
+
+  .ac-image {
+    width: 100%; aspect-ratio: 4/3;
+    background: var(--bg3);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 48px; position: relative;
+    overflow: hidden;
+  }
+  .ac-image.portrait { aspect-ratio: 3/4; }
+  .ac-image.square { aspect-ratio: 1; }
+
+  /* Gradient overlays by category */
+  .ac-image.acrilica { background: linear-gradient(135deg, #1A1008 0%, #2A1F12 100%); }
+  .ac-image.acuarela { background: linear-gradient(135deg, #0D1520 0%, #1A2535 100%); }
+  .ac-image.lapiz { background: linear-gradient(135deg, #141414 0%, #1E1E1E 100%); }
+  .ac-image.tinta { background: linear-gradient(135deg, #0A0A0A 0%, #181818 100%); }
+  .ac-image.mixta { background: linear-gradient(135deg, #12100A 0%, #201C14 100%); }
+
+  .ac-sold-badge {
+    position: absolute; top: 12px; right: 12px;
+    font-size: 9px; font-weight: 400;
+    letter-spacing: .12em; text-transform: uppercase;
+    background: rgba(13,11,8,0.85);
+    border: 1px solid rgba(242,234,216,0.2);
+    color: var(--t3); padding: 4px 10px; border-radius: 20px;
+  }
+  .ac-emoji { font-size: 52px; filter: drop-shadow(0 4px 12px rgba(0,0,0,0.5)); }
+
+  .ac-info {
+    padding: 14px 16px;
+    display: flex; align-items: flex-start;
+    justify-content: space-between; gap: 10px;
+  }
+  .ac-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 17px; font-style: italic;
+    color: var(--cream); margin-bottom: 3px;
+  }
+  .ac-meta { font-size: 11px; color: var(--t2); line-height: 1.6; }
+  .ac-price {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px; color: var(--gold);
+    flex-shrink: 0; text-align: right;
+  }
+  .ac-price-sold {
+    font-size: 11px; color: var(--t3);
+    text-align: right; margin-top: 2px;
+  }
+
+  /* Detail expand */
+  .ac-detail {
+    max-height: 0; overflow: hidden;
+    transition: max-height .35s ease, opacity .25s ease;
+    opacity: 0;
+  }
+  .ac-detail.open { max-height: 300px; opacity: 1; }
+  .ac-detail-inner {
+    border-top: 1px solid var(--border);
+    padding: 14px 16px 16px;
+  }
+  .ac-desc { font-size: 12px; font-weight: 200; color: var(--t2); line-height: 1.8; margin-bottom: 12px; }
+  .ac-cta {
+    display: block; width: 100%;
+    background: var(--gold); color: var(--bg);
+    border: none;
+    font-family: 'Jost', sans-serif;
+    font-size: 11px; font-weight: 400;
+    letter-spacing: .15em; text-transform: uppercase;
+    padding: 12px; cursor: pointer;
+    text-decoration: none; text-align: center;
+    transition: opacity .15s;
+  }
+  .ac-cta:active { opacity: .85; }
+  .ac-cta.disabled {
+    background: var(--bg3);
+    color: var(--t3); cursor: default;
+    border: 1px solid var(--border);
+  }
+
+  /* Cotización form */
+  .cotizar-section {
+    padding: 28px 20px 0;
+    border-top: 1px solid var(--border);
+  }
+  .sec-eyebrow {
+    font-size: 10px; font-weight: 300;
+    letter-spacing: .2em; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 8px;
+  }
+  .sec-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px; font-style: italic;
+    color: var(--cream); margin-bottom: 8px; line-height: 1.2;
+  }
+  .sec-sub { font-size: 13px; font-weight: 200; color: var(--t2); line-height: 1.7; margin-bottom: 20px; }
+
+  .form-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 20px; margin-bottom: 12px;
+  }
+  .form-label {
+    font-size: 10px; font-weight: 400;
+    letter-spacing: .12em; text-transform: uppercase;
+    color: var(--t3); margin-bottom: 8px; display: block;
+  }
+  .form-input {
+    width: 100%; background: var(--bg3);
+    border: 1px solid var(--border);
+    color: var(--t1); padding: 12px 14px;
+    font-family: 'Jost', sans-serif;
+    font-size: 14px; font-weight: 200;
+    border-radius: var(--radius); margin-bottom: 14px;
+    outline: none; transition: border-color .2s;
+    -webkit-appearance: none;
+  }
+  .form-input:focus { border-color: var(--gold-border); }
+  .form-input::placeholder { color: var(--t3); }
+
+  .obra-selector {
+    display: flex; flex-direction: column; gap: 8px;
+    margin-bottom: 14px;
+  }
+  .obra-option {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 14px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    cursor: pointer; transition: border-color .2s;
+  }
+  .obra-option.selected { border-color: var(--gold-border); background: var(--gold-dim); }
+  .oo-check {
+    width: 18px; height: 18px; border-radius: 50%;
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; transition: all .2s;
+  }
+  .obra-option.selected .oo-check {
+    background: var(--gold); border-color: var(--gold);
+    color: var(--bg); font-size: 10px;
+  }
+  .oo-name { font-size: 13px; color: var(--t1); flex: 1; }
+  .oo-price { font-size: 13px; color: var(--gold); flex-shrink: 0; }
+
+  .flete-toggle {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px; background: var(--bg3);
+    border: 1px solid var(--border); border-radius: var(--radius);
+    cursor: pointer; margin-bottom: 14px;
+    transition: border-color .2s;
+  }
+  .flete-toggle.active { border-color: var(--gold-border); background: var(--gold-dim); }
+  .ft-switch {
+    width: 38px; height: 22px; border-radius: 11px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    position: relative; flex-shrink: 0;
+    transition: background .2s;
+  }
+  .flete-toggle.active .ft-switch { background: var(--gold); border-color: var(--gold); }
+  .ft-thumb {
+    position: absolute; top: 2px; left: 2px;
+    width: 16px; height: 16px; border-radius: 50%;
+    background: var(--t3); transition: transform .2s, background .2s;
+  }
+  .flete-toggle.active .ft-thumb { transform: translateX(16px); background: var(--bg); }
+  .ft-text { font-size: 13px; color: var(--t2); }
+
+  .flete-detail {
+    display: none; margin-bottom: 14px;
+  }
+  .flete-detail.visible { display: block; }
+
+  .form-submit {
+    display: block; width: 100%;
+    background: var(--gold); color: var(--bg);
+    border: none;
+    font-family: 'Jost', sans-serif;
+    font-size: 11px; font-weight: 500;
+    letter-spacing: .2em; text-transform: uppercase;
+    padding: 16px; cursor: pointer;
+    transition: opacity .15s;
+    margin-top: 4px;
+  }
+  .form-submit:active { opacity: .85; }
+
+  /* About */
+  .about-section {
+    padding: 28px 20px 0;
+    border-top: 1px solid var(--border);
+  }
+  .about-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 20px; margin-bottom: 12px;
+  }
+  .about-quote {
+    font-family: 'Playfair Display', serif;
+    font-size: 19px; font-style: italic; font-weight: 400;
+    color: var(--cream); line-height: 1.55;
+    margin-bottom: 14px;
+  }
+  .about-quote span { color: var(--gold); }
+  .about-text { font-size: 13px; font-weight: 200; color: var(--t2); line-height: 1.8; }
+
+  /* Técnicas info */
+  .tecnicas-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 8px; margin-bottom: 12px;
+  }
+  .tec-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 14px 12px; text-align: center;
+  }
+  .tec-icon { font-size: 22px; margin-bottom: 6px; }
+  .tec-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 14px; font-style: italic;
+    color: var(--cream); margin-bottom: 3px;
+  }
+  .tec-count { font-size: 11px; color: var(--gold); }
+
+  /* CTA final */
+  .cta-final {
+    margin: 28px 20px 40px;
+    background: var(--bg2);
+    border: 1px solid var(--gold-border);
+    border-radius: var(--radius-lg);
+    padding: 28px 24px; text-align: center;
+    background-image: radial-gradient(ellipse at 50% 0%, rgba(201,168,76,0.07) 0%, transparent 55%);
+  }
+  .cf-brush {
+    width: 50px; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 0 auto 16px;
+  }
+  .cf-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px; font-style: italic;
+    color: var(--cream); margin-bottom: 8px; line-height: 1.2;
+  }
+  .cf-title span { color: var(--gold); }
+  .cf-sub { font-size: 13px; font-weight: 200; color: var(--t2); margin-bottom: 22px; line-height: 1.7; }
+  .cf-btn {
+    display: block; width: 100%;
+    background: var(--gold); color: var(--bg);
+    border: none;
+    font-family: 'Jost', sans-serif;
+    font-size: 11px; font-weight: 500;
+    letter-spacing: .18em; text-transform: uppercase;
+    padding: 16px; cursor: pointer;
+    text-decoration: none; margin-bottom: 10px;
+    transition: opacity .15s;
+  }
+  .cf-btn:active { opacity: .85; }
+  .cf-btn.outline {
+    background: transparent;
+    border: 1px solid var(--border); color: var(--t2);
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .fade-in { animation: fadeUp .5s ease forwards; }
+</style>
+</head>
+<body>
+
+<!-- SPLASH -->
+<div id="splash">
+  <div class="splash-brush"></div>
+  <div class="splash-by">Galería de arte original</div>
+  <div class="splash-title">Atelier</div>
+  <div class="splash-aj">by AJ</div>
+  <div class="splash-sub">Obra original · Acrílico · Acuarela · Tinta · Lápiz<br>Ana Jasso · Guadalajara · México</div>
+  <div class="splash-categories">
+    <span class="sc-pill">🎨 Acrílicas</span>
+    <span class="sc-pill">💧 Acuarelas</span>
+    <span class="sc-pill">✏️ Lápiz</span>
+    <span class="sc-pill">🖋️ Tinta</span>
+  </div>
+  <button class="splash-btn" onclick="startApp()">Explorar la galería</button>
+  <div class="splash-note">Obras disponibles · Envíos a todo México</div>
+</div>
+
+<!-- APP -->
+<div id="app">
+
+  <div class="header">
+    <div>
+      <div class="h-name">Atelier <span class="h-aj">by AJ</span></div>
+      <div class="h-sub">Ana Jasso · Arte original</div>
+    </div>
+    <a href="#cotizar" class="h-cta">Cotizar obra</a>
+  </div>
+
+  <!-- Hero -->
+  <div class="hero fade-in">
+    <div class="hero-label">✦ Obra original · Pieza única</div>
+    <div class="hero-title">Arte que vive<br>en tu <span>espacio</span></div>
+    <div class="hero-sub">Cada obra es única, pintada a mano con alma y técnica propia. Acrílico, acuarela, tinta y lápiz — para todos los gustos y espacios.</div>
+    <div class="hero-stats">
+      <div class="hs">
+        <div class="hs-num">50+</div>
+        <div class="hs-label">obras originales</div>
+      </div>
+      <div class="hs">
+        <div class="hs-num">5</div>
+        <div class="hs-label">técnicas</div>
+      </div>
+      <div class="hs">
+        <div class="hs-num">🚚</div>
+        <div class="hs-label">envíos México</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filter -->
+  <div class="filter-wrap">
+    <button class="filter-btn active" onclick="showGallery('todas', this)">Todas</button>
+    <button class="filter-btn" onclick="showGallery('acrilica', this)">Acrílicas</button>
+    <button class="filter-btn" onclick="showGallery('acuarela', this)">Acuarelas</button>
+    <button class="filter-btn" onclick="showGallery('lapiz', this)">Lápiz</button>
+    <button class="filter-btn" onclick="showGallery('tinta', this)">Tinta</button>
+  </div>
+
+  <div class="gallery">
+
+    <!-- TODAS -->
+    <div class="gallery-grid active" id="grid-todas">
+
+      <!-- Acrílicas destacadas -->
+      <div class="artwork-card" onclick="toggleArtwork('a1')">
+        <div class="ac-image acrilica portrait">
+          <div class="ac-emoji">🌺</div>
+        </div>
+        <div class="ac-info">
+          <div>
+            <div class="ac-name">"Alcatraces"</div>
+            <div class="ac-meta">Acrílico sobre madera · 60×70 cm</div>
+          </div>
+          <div>
+            <div class="ac-price">$7,000</div>
+          </div>
+        </div>
+        <div class="ac-detail" id="a1">
+          <div class="ac-detail-inner">
+            <div class="ac-desc">Alcatraces en acrílico sobre madera, con fondo oscuro que realza la calidez de los colores. Una obra que irradia elegancia natural.</div>
+            <a href="#cotizar" class="ac-cta" onclick="preselectObra('Alcatraces — $7,000')">Quiero esta obra</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="artwork-card" onclick="toggleArtwork('a2')">
+        <div class="ac-image acrilica">
+          <div class="ac-emoji">🌆</div>
+        </div>
+        <div class="ac-info">
+          <div>
+            <div class="ac-name">"Paisaje citadino"</div>
+            <div class="ac-meta">Acrílico sobre tela · 60×80 cm</div>
+          </div>
+          <div><div class="ac-price">$5,200</div></div>
+        </div>
+        <div class="ac-detail" id="a2">
+          <div class="ac-detail-inner">
+            <div class="ac-desc">Abstracción urbana en tonos grises y amarillos — una ciudad que late entre niebla y luz artificial. Perfecta para espacios contemporáneos.</div>
+            <a href="#cotizar" class="ac-cta" onclick="preselectObra('Paisaje citadino — $5,200')">Quiero esta obra</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="artwork-card" onclick="toggleArtwork('a3')">
+        <div class="ac-image acrilica square">
+          <div class="ac-emoji">👩</div>
+        </div>
+        <div class="ac-info">
+          <div>
+            <div class="ac-name">"Mujer"</div>
+            <div class="ac-meta">Acrílico sobre tela · 50×50 cm</div>
+          </div>
+          <div><div class="ac-price">$3,800</div></div>
+        </div>
+        <div class="ac-detail" id="a3">
+          <div class="ac-detail-inner">
+            <div class="ac-desc">Figura femenina en tonos cálidos y azul — fuerza y delicadeza en una sola pincelada. Una obra que habla sin palabras.</div>
+            <a href="#cotizar" class="ac-cta" onclick="preselectObra('Mujer — $3,800')">Quiero esta obra</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="artwork-card" onclick="toggleArtwork('a4')">
+        <div class="ac-image acrilica">
+          <div class="ac-emoji">☂️</div>
+        </div>
+        <div class="ac-info">
+          <div>
+            <div class="ac-name">"La chica de la sombrilla roja"</div>
+            <div class="ac-meta">Acrílico sobre tela · 60×80 cm</div>
+          </div>
+          <div><div class="ac-price">$4,000</div></div>
+        </div>
+        <div class="ac-detail" id="a4">
+          <div class="ac-detail-inner">
+            <div class="ac-desc">Una figura solitaria en un bosque de invierno, con un destello de rojo que lo dice todo. Una de las obras más poéticas de la colección.</div>
+            <a href="#cotizar" class="ac-cta" onclick="preselectObra('La chica de la sombrilla roja — $4,000')">Quiero esta obra</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="artwork-card" onclick="toggleArtwork('a5')">
+        <div class="ac-image acrilica">
+          <div class="ac-emoji">🦩</div>
+        </div>
+        <div class="ac-info">
+          <div>
+            <div class="ac-name">"Flamingos"</div>
+            <div class="ac-meta">Acrílico sobre tela · 50×60 cm (2 bastidores)</div>
+          </div>
+          <div><div class="ac-price">$4,000</div></div>
+        </div>
+        <div class="ac-detail" id="a5">
+          <div class="ac-detail-inner">
+            <div class="ac-desc">Díptico vibrante de flamingos en rosa coral sobre fondo blanco. Dos lienzos que juntos forman una composición llena de movimiento y alegría.</div>
+            <a href="#cotizar" class="ac-cta" onclick="preselectObra('Flamingos (díptico) — $4,000')">Quiero esta obra</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="artwork-card" onclick="toggleArtwork('a6')">
+        <div class="ac-image acrilica">
+          <div class="ac-emoji">🦁</div>
+        </div>
+        <div class="ac-info">
+          <div>
+            <div class="ac-name">"León colorido"</div>
+            <div class="ac-meta">Acrílico sobre tela · 60×80 cm</div>
+          </div>
+          <div><div class="ac-price">$6,000</div></div>
+        </div>
+        <div class="ac-detail" id="a6">
+          <div class="ac-detail-inner">
+            <div class="ac-desc">León en explosión de color — azul, verde, naranja, morado. La fuerza del rey de la selva traducida en una paleta que domina cualquier espacio.</div>
+            <a href="#cotizar" class="ac-cta" onclick="preselectObra('León colorido — $6,000')">Quiero esta obra</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="artwork-card" onclick="toggleArtwork('a7')">
+        <div class="ac-image acrilica">
+          <div class="ac-emoji">🦏</div>
+        </div>
+        <div class="ac-info">
+          <div>
+            <div class="ac-name">"Rinoceronte"</div>
+            <div class="ac-meta">Acrílico sobre tela · 60×80 cm</div>
+          </div>
+          <div><div class="ac-price">$3,800</div></div>
+        </div>
+        <div class="ac-detail" id="a7">
+          <div class="ac-detail-inner">
+            <div class="ac-desc">Rinoceronte en azules y dorados — una bestia majestuosa reinterpretada con pinceladas expresivas y sueltas. Perfecto para espacios con carácter.</div>
+            <a href="#cotizar" class="ac-cta" onclick="preselectObra('Rinoceronte — $3,800')">Quiero esta obra</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="artwork-card" onclick="toggleArtwork('a8')">
+        <div class="ac-image acrilica">
+          <div class="ac-emoji">🦜</div>
+        </div>
+        <div class="ac-info">
+          <div>
+            <div class="ac-name">"Guacamaya"</div>
+            <div class="ac-meta">Acrílico sobre tela · 60×80 cm</div>
+          </div>
+          <div><div class="ac-price">$4,500</div></div>
+        </div>
+        <div class="ac-detail" id="a8">
+          <div class="ac-detail-inner">
+            <div class="ac-desc">Guacamaya en pleno vuelo — plumas que explotan en azul, rojo y naranja sobre fondo gris. Una obra que trae vida y color a cualquier rincón.</div>
+            <a href="#cotizar" class="ac-cta" onclick="preselectObra('Guacamaya — $4,500')">Quiero esta obra</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="artwork-card" onclick="toggleArtwork('a9')">
+        <div class="ac-image acrilica">
+          <div class="ac-emoji">🐘</div>
+        </div>
+        <div class="ac-info">
+          <div>
+            <div class="ac-name">"Elefante"</div>
+            <div class="ac-meta">Acrílico sobre tela · 50×70 cm</div>
+          </div>
+          <div><div class="ac-price">$4,000</div></div>
+        </div>
+        <div class="ac-detail" id="a9">
+          <div class="ac-detail-inner">
+            <div class="ac-desc">Elefante multicolor en estilo pop — naranja, azul, amarillo, verde. Un símbolo de sabiduría y buena suerte lleno de energía y color.</div>
+            <a href="#cotizar" class="ac-cta" onclick="preselectObra('Elefante — $4,000')">Quiero esta obra</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="artwork-card" onclick="toggleArtwork('a10')">
+        <div class="ac-image acrilica">
+          <div class="ac-emoji">🦌</div>
+        </div>
+        <div class="ac-info">
+          <div>
+            <div class="ac-name">"Manik"</div>
+            <div class="ac-meta">Acrílico sobre tela · 60×80 cm</div>
+          </div>
+          <div><div class="ac-price">$4,500</div></div>
+        </div>
+        <div class="ac-detail" id="a10">
+          <div class="ac-detail-inner">
+            <div class="ac-desc">Venado fantástico con astas de turquesa y rojo sobre fondo gris texturizado. Una obra entre lo onírico y lo salvaje que nadie olvida.</div>
+            <a href="#cotizar" class="ac-cta" onclick="preselectObra('Manik — $4,500')">Quiero esta obra</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="artwork-card" onclick="toggleArtwork('a11')">
+        <div class="ac-image acrilica">
+          <div class="ac-emoji">⛵</div>
+        </div>
+        <div class="ac-info">
+          <div>
+            <div class="ac-name">"Botes en la playa"</div>
+            <div class="ac-meta">Acrílico sobre tela · 50×50 cm</div>
+          </div>
+          <div><div class="ac-price">$4,300</div></div>
+        </div>
+        <div class="ac-detail" id="a11">
+          <div class="ac-detail-inner">
+            <div class="ac-desc">Tres botes de colores sobre la arena dorada al borde del mar. Una escena de calma y verano que transporta al que la mira.</div>
+            <a href="#cotizar" class="ac-cta" onclick="preselectObra('Botes en la playa — $4,300')">Quiero esta obra</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="artwork-card" onclick="toggleArtwork('a12')">
+        <div class="ac-image acrilica">
+          <div class="ac-emoji">🍍</div>
+        </div>
+        <div class="ac-info">
+          <div>
+            <div class="ac-name">"Piña"</div>
+            <div class="ac-meta">Acrílico sobre tela · 60×80 cm</div>
+          </div>
+          <div><div class="ac-price">$4,000</div></div>
+        </div>
+        <div class="ac-detail" id="a12">
+          <div class="ac-detail-inner">
+            <div class="ac-desc">Piña en negro y amarillo sobre fondo turquesa brillante. Un pop art tropical que alegra cocinas, comedores y espacios de vida.</div>
+            <a href="#cotizar" class="ac-cta" onclick="preselectObra('Piña — $4,000')">Quiero esta obra</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="artwork-card sold" onclick="toggleArtwork('a-plenitud')">
+        <div class="ac-image acrilica portrait">
+          <div class="ac-emoji">🌈</div>
+          <div class="ac-sold-badge">Vendido</div>
+        </div>
+        <div class="ac-info">
+          <div>
+            <div class="ac-name">"Plenitud"</div>
+            <div class="ac-meta">Acrílico sobre tela · 160×150 cm · Obra maestra</div>
+          </div>
+          <div><div class="ac-price-sold">$29,000 · Vendido</div></div>
+        </div>
+        <div class="ac-detail" id="a-plenitud">
+          <div class="ac-detail-inner">
+            <div class="ac-desc">La obra más grande y personal de la colección. Mujer en explosión de color — fuerza, transformación y plenitud en 160×150 cm. Vendida.</div>
+            <div class="ac-cta disabled">Esta obra ya tiene dueño</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Acuarelas -->
+      <div class="artwork-card" onclick="toggleArtwork('aq1')">
+        <div class="ac-image acuarela portrait">
+          <div class="ac-emoji">🌺</div>
+        </div>
+        <div class="ac-info">
+          <div>
+            <div class="ac-name">"Ave del Paraíso"</div>
+            <div class="ac-meta">Acuarela · Tamaño carta</div>
+          </div>
+          <div><div class="ac-price">$300</div></div>
+        </div>
+        <div class="ac-detail" id="aq1">
+          <div class="ac-detail-inner">
+            <div class="ac-desc">Ave del paraíso en acuarela, con la delicadeza característica de esta técnica. Ideal para enmarcar y regalar.</div>
+            <a href="#cotizar" class="ac-cta" onclick="preselectObra('Ave del Paraíso (acuarela) — $300')">Quiero esta obra</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="artwork-card" onclick="toggleArtwork('aq2')">
+        <div class="ac-image acuarela">
+          <div class="ac-emoji">🐢</div>
+        </div>
+        <div class="ac-info">
+          <div>
+            <div class="ac-name">"Tortuga #2"</div>
+            <div class="ac-meta">Acuarela · Original</div>
+          </div>
+          <div><div class="ac-price">$400</div></div>
+        </div>
+        <div class="ac-detail" id="aq2">
+          <div class="ac-detail-inner">
+            <div class="ac-desc">Tortuga marina en acuarela con tonos rosados y verdes — pacífica y llena de gracia. Una obra perfecta para espacios junto al mar.</div>
+            <a href="#cotizar" class="ac-cta" onclick="preselectObra('Tortuga #2 (acuarela) — $400')">Quiero esta obra</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="artwork-card" onclick="toggleArtwork('aq3')">
+        <div class="ac-image acuarela">
+          <div class="ac-emoji">🌸</div>
+        </div>
+        <div class="ac-info">
+          <div>
+            <div class="ac-name">"Pink flowers"</div>
+            <div class="ac-meta">Acuarela · Original</div>
+          </div>
+          <div><div class="ac-price">$300</div></div>
+        </div>
+        <div class="ac-detail" id="aq3">
+          <div class="ac-detail-inner">
+            <div class="ac-desc">Flores rosas en acuarela, delicadas y luminosas. Perfecta para baños, recámaras o como regalo especial.</div>
+            <a href="#cotizar" class="ac-cta" onclick="preselectObra('Pink flowers (acuarela) — $300')">Quiero esta obra</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="artwork-card" onclick="toggleArtwork('aq4')">
+        <div class="ac-image acuarela">
+          <div class="ac-emoji">🏔️</div>
+        </div>
+        <div class="ac-info">
+          <div>
+            <div class="ac-name">"Paisaje nevado"</div>
+            <div class="ac-meta">Acuarela · Original</div>
+          </div>
+          <div><div class="ac-price">$400</div></div>
+        </div>
+        <div class="ac-detail" id="aq4">
+          <div class="ac-detail-inner">
+            <div class="ac-desc">Montaña nevada enmarcada por árboles de otoño rojo intenso. Una obra de gran belleza y serenidad.</div>
+            <a href="#cotizar" class="ac-cta" onclick="preselectObra('Paisaje nevado (acuarela) — $400')">Quiero esta obra</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="artwork-card" onclick="toggleArtwork('aq5')">
+        <div class="ac-image acuarela">
+          <div class="ac-emoji">🎩</div>
+        </div>
+        <div class="ac-info">
+          <div>
+            <div class="ac-name">"Black hat"</div>
+            <div class="ac-meta">Acuarela · Original</div>
+          </div>
+          <div><div class="ac-price">$200</div></div>
+        </div>
+        <div class="ac-detail" id="aq5">
+          <div class="ac-detail-inner">
+            <div class="ac-desc">Mujer con sombrero negro y detalle rojo — elegante, misteriosa, teatral. Una ilustración de moda con mucho carácter.</div>
+            <a href="#cotizar" class="ac-cta" onclick="preselectObra('Black hat (acuarela) — $200')">Quiero esta obra</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="artwork-card" onclick="toggleArtwork('aq6')">
+        <div class="ac-image acuarela">
+          <div class="ac-emoji">☕</div>
+        </div>
+        <div class="ac-info">
+          <div>
+            <div class="ac-name">"En el lago"</div>
+            <div class="ac-meta">Acuarela con café · Original · Técnica única</div>
+          </div>
+          <div><div class="ac-price">$400</div></div>
+        </div>
+        <div class="ac-detail" id="aq6">
+          <div class="ac-detail-inner">
+            <div class="ac-desc">Paisaje de lago en acuarela con café — técnica poco común que da una calidez y textura únicas. Obra contemplativa y original.</div>
+            <a href="#cotizar" class="ac-cta" onclick="preselectObra('En el lago (acuarela con café) — $400')">Quiero esta obra</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tinta destacadas -->
+      <div class="artwork-card" onclick="toggleArtwork('t1')">
+        <div class="ac-image tinta">
+          <div class="ac-emoji">🦑</div>
+        </div>
+        <div class="ac-info">
+          <div>
+            <div class="ac-name">"Caballito de mar"</div>
+            <div class="ac-meta">Tinta · Zentangle · Original</div>
+          </div>
+          <div><div class="ac-price">$300</div></div>
+        </div>
+        <div class="ac-detail" id="t1">
+          <div class="ac-detail-inner">
+            <div class="ac-desc">Caballito de mar en tinta con patrones zentangle intrincados. Trabajo de precisión y paciencia — una obra que invita a perderse en los detalles.</div>
+            <a href="#cotizar" class="ac-cta" onclick="preselectObra('Caballito de mar (tinta) — $300')">Quiero esta obra</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="artwork-card" onclick="toggleArtwork('t2')">
+        <div class="ac-image tinta">
+          <div class="ac-emoji">🐦</div>
+        </div>
+        <div class="ac-info">
+          <div>
+            <div class="ac-name">"Colibrí"</div>
+            <div class="ac-meta">Tinta · Zentangle · Original</div>
+          </div>
+          <div><div class="ac-price">$300</div></div>
+        </div>
+        <div class="ac-detail" id="t2">
+          <div class="ac-detail-inner">
+            <div class="ac-desc">Colibrí en tinta negra con textura zentangle de plumas. Un trabajo de detalle extraordinario que celebra la naturaleza.</div>
+            <a href="#cotizar" class="ac-cta" onclick="preselectObra('Colibrí (tinta) — $300')">Quiero esta obra</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="artwork-card" onclick="toggleArtwork('t3')">
+        <div class="ac-image tinta square">
+          <div class="ac-emoji">🦁</div>
+        </div>
+        <div class="ac-info">
+          <div>
+            <div class="ac-name">"El León"</div>
+            <div class="ac-meta">Tinta · Silueta · Original</div>
+          </div>
+          <div><div class="ac-price">$200</div></div>
+        </div>
+        <div class="ac-detail" id="t3">
+          <div class="ac-detail-inner">
+            <div class="ac-desc">León en tinta con trazo caligráfico — elegante y poderoso. Silueta de línea pura con gran impacto visual.</div>
+            <a href="#cotizar" class="ac-cta" onclick="preselectObra('El León (tinta) — $200')">Quiero esta obra</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lápiz destacadas -->
+      <div class="artwork-card" onclick="toggleArtwork('l1')">
+        <div class="ac-image lapiz portrait">
+          <div class="ac-emoji">🐴</div>
+        </div>
+        <div class="ac-info">
+          <div>
+            <div class="ac-name">"Caballo #1"</div>
+            <div class="ac-meta">Lápiz · Hiperrealismo · Original</div>
+          </div>
+          <div><div class="ac-price">$300</div></div>
+        </div>
+        <div class="ac-detail" id="l1">
+          <div class="ac-detail-inner">
+            <div class="ac-desc">Caballo al galope en lápiz — sombreado preciso que captura el movimiento, la musculatura y la libertad del animal. Obra de gran técnica.</div>
+            <a href="#cotizar" class="ac-cta" onclick="preselectObra('Caballo #1 (lápiz) — $300')">Quiero esta obra</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="artwork-card" onclick="toggleArtwork('l2')">
+        <div class="ac-image lapiz">
+          <div class="ac-emoji">🦒</div>
+        </div>
+        <div class="ac-info">
+          <div>
+            <div class="ac-name">"Jirafa"</div>
+            <div class="ac-meta">Lápiz · Retrato animal · Original</div>
+          </div>
+          <div><div class="ac-price">$300</div></div>
+        </div>
+        <div class="ac-detail" id="l2">
+          <div class="ac-detail-inner">
+            <div class="ac-desc">Retrato frontal de jirafa en lápiz — expresiva, tierna y llena de detalle. Una pieza que enamora a quien la ve.</div>
+            <a href="#cotizar" class="ac-cta" onclick="preselectObra('Jirafa (lápiz) — $300')">Quiero esta obra</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mixta -->
+      <div class="artwork-card" onclick="toggleArtwork('m1')">
+        <div class="ac-image mixta portrait">
+          <div class="ac-emoji">🎭</div>
+        </div>
+        <div class="ac-info">
+          <div>
+            <div class="ac-name">"Lady in black coat"</div>
+            <div class="ac-meta">Técnica mixta · Original</div>
+          </div>
+          <div><div class="ac-price">$300</div></div>
+        </div>
+        <div class="ac-detail" id="m1">
+          <div class="ac-detail-inner">
+            <div class="ac-desc">Mujer de perfil con abrigo negro — detalle en dorado, lápiz y tinta sobre fondo negro. Elegancia editorial en técnica mixta.</div>
+            <a href="#cotizar" class="ac-cta" onclick="preselectObra('Lady in black coat (mixta) — $300')">Quiero esta obra</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ACRÍLICAS -->
+    <div class="gallery-grid" id="grid-acrilica">
+      <div style="font-family:'Playfair Display',serif;font-style:italic;font-size:16px;color:var(--t2);text-align:center;padding:20px 0;">Ver sección "Todas" para explorar las acrílicas disponibles</div>
+    </div>
+
+    <!-- ACUARELAS -->
+    <div class="gallery-grid" id="grid-acuarela">
+      <div style="font-family:'Playfair Display',serif;font-style:italic;font-size:16px;color:var(--t2);text-align:center;padding:20px 0;">Ver sección "Todas" para explorar las acuarelas disponibles</div>
+    </div>
+
+    <!-- LÁPIZ -->
+    <div class="gallery-grid" id="grid-lapiz">
+      <div style="font-family:'Playfair Display',serif;font-style:italic;font-size:16px;color:var(--t2);text-align:center;padding:20px 0;">Ver sección "Todas" para explorar las obras en lápiz disponibles</div>
+    </div>
+
+    <!-- TINTA -->
+    <div class="gallery-grid" id="grid-tinta">
+      <div style="font-family:'Playfair Display',serif;font-style:italic;font-size:16px;color:var(--t2);text-align:center;padding:20px 0;">Ver sección "Todas" para explorar las obras en tinta disponibles</div>
+    </div>
+
+  </div>
+
+  <!-- Técnicas -->
+  <div class="about-section">
+    <div class="sec-eyebrow">✦ Técnicas</div>
+    <div class="tecnicas-grid">
+      <div class="tec-card">
+        <div class="tec-icon">🎨</div>
+        <div class="tec-name">Acrílica</div>
+        <div class="tec-count">16 obras</div>
+      </div>
+      <div class="tec-card">
+        <div class="tec-icon">💧</div>
+        <div class="tec-name">Acuarela</div>
+        <div class="tec-count">10 obras</div>
+      </div>
+      <div class="tec-card">
+        <div class="tec-icon">✏️</div>
+        <div class="tec-name">Lápiz</div>
+        <div class="tec-count">13 obras</div>
+      </div>
+      <div class="tec-card">
+        <div class="tec-icon">🖋️</div>
+        <div class="tec-name">Tinta</div>
+        <div class="tec-count">14 obras</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sobre Ana -->
+  <div class="about-section" style="padding-top:20px;">
+    <div class="sec-eyebrow">✦ La artista</div>
+    <div class="about-card">
+      <div class="about-quote">"Pinto lo que me mueve — animales con alma, mujeres con historia, paisajes que cuentan algo que <span>las palabras no alcanzan</span>."</div>
+      <div class="about-text">Ana Jasso es artista plástica autodidacta desde Guadalajara. Su trabajo abarca el acrílico expresivo, la precisión del lápiz hiperrealista, la delicadeza de la acuarela y la intrincada belleza del zentangle en tinta. Cada obra es pieza única, firmada y certificada.</div>
+    </div>
+  </div>
+
+  <!-- Formulario de cotización -->
+  <div class="cotizar-section" id="cotizar">
+    <div class="sec-eyebrow">✦ Cotización y compra</div>
+    <div class="sec-title">¿Te enamoraste<br>de alguna obra?</div>
+    <div class="sec-sub">Llena el formulario y te contactamos con disponibilidad, costo de envío y opciones de pago. Sin compromiso.</div>
+
+    <div class="form-card">
+      <label class="form-label">Tu nombre</label>
+      <input class="form-input" type="text" id="f-nombre" placeholder="¿Cómo te llamas?">
+
+      <label class="form-label">WhatsApp o correo</label>
+      <input class="form-input" type="text" id="f-contacto" placeholder="Para contactarte">
+
+      <label class="form-label">Ciudad</label>
+      <input class="form-input" type="text" id="f-ciudad" placeholder="¿Desde dónde nos escribes?">
+
+      <label class="form-label">Obra de tu interés</label>
+      <input class="form-input" type="text" id="f-obra" placeholder="Nombre de la obra o descríbela">
+
+      <!-- Flete toggle -->
+      <div class="flete-toggle" id="fleteToggle" onclick="toggleFlete()">
+        <div class="ft-switch"><div class="ft-thumb"></div></div>
+        <div class="ft-text">Necesito envío a domicilio</div>
+      </div>
+
+      <div class="flete-detail" id="fleteDetail">
+        <label class="form-label">Dirección de entrega</label>
+        <input class="form-input" type="text" id="f-direccion" placeholder="Calle, colonia, ciudad, CP">
+        <div style="font-size:11px;color:var(--t3);margin-top:-10px;margin-bottom:14px;line-height:1.6;">El costo de envío se cotiza según la distancia y el tamaño de la obra. Te lo confirmamos por WhatsApp.</div>
+      </div>
+
+      <label class="form-label">¿Algo más que quieras decirnos?</label>
+      <input class="form-input" type="text" id="f-nota" placeholder="Presupuesto, medidas ideales, ocasión especial...">
+
+      <button class="form-submit" onclick="enviarCotizacion()">Enviar cotización por WhatsApp ✦</button>
+    </div>
+  </div>
+
+  <!-- CTA final -->
+  <div class="cta-final">
+    <div class="cf-brush"></div>
+    <div class="cf-title">Arte que te<br><span>acompaña</span> toda la vida</div>
+    <div class="cf-sub">Una obra original no es un gasto — es una presencia que cambia un espacio, una historia que cuelgas en tu pared.</div>
+    <a href="https://wa.me/523312345678?text=Hola%2C%20vi%20el%20cat%C3%A1logo%20de%20Atelier%20by%20AJ%20y%20me%20interesa%20una%20obra" target="_blank" class="cf-btn">Escribir a Atelier by AJ ✦</a>
+    <a href="mailto:hola@atelierbyaj.mx" class="cf-btn outline">hola@atelierbyaj.mx</a>
+  </div>
+
+</div>
+
+<script>
+  function startApp() {
+    document.getElementById('splash').classList.add('out');
+    setTimeout(function() { document.getElementById('splash').style.display = 'none'; }, 700);
+  }
+
+  function showGallery(id, btn) {
+    document.querySelectorAll('.gallery-grid').forEach(function(g) { g.classList.remove('active'); });
+    document.querySelectorAll('.filter-btn').forEach(function(b) { b.classList.remove('active'); });
+    document.getElementById('grid-' + id).classList.add('active');
+    btn.classList.add('active');
+  }
+
+  function toggleArtwork(id) {
+    var el = document.getElementById(id);
+    var isOpen = el.classList.contains('open');
+    document.querySelectorAll('.ac-detail').forEach(function(d) { d.classList.remove('open'); });
+    if (!isOpen) {
+      el.classList.add('open');
+      setTimeout(function() { el.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }, 200);
+    }
+  }
+
+  function toggleFlete() {
+    var toggle = document.getElementById('fleteToggle');
+    var detail = document.getElementById('fleteDetail');
+    toggle.classList.toggle('active');
+    detail.classList.toggle('visible');
+  }
+
+  function preselectObra(nombre) {
+    document.getElementById('f-obra').value = nombre;
+  }
+
+  function enviarCotizacion() {
+    var nombre = document.getElementById('f-nombre').value || 'Sin nombre';
+    var contacto = document.getElementById('f-contacto').value || 'No especificado';
+    var ciudad = document.getElementById('f-ciudad').value || 'No especificada';
+    var obra = document.getElementById('f-obra').value || 'Sin especificar';
+    var nota = document.getElementById('f-nota').value || '';
+    var flete = document.getElementById('fleteToggle').classList.contains('active');
+    var direccion = document.getElementById('f-direccion').value || '';
+
+    var msg = '✦ Cotización Atelier by AJ\n\n'
+      + 'Nombre: ' + nombre + '\n'
+      + 'Contacto: ' + contacto + '\n'
+      + 'Ciudad: ' + ciudad + '\n'
+      + 'Obra de interés: ' + obra + '\n'
+      + (flete ? 'Necesita envío: Sí\nDirección: ' + direccion + '\n' : '')
+      + (nota ? 'Nota: ' + nota : '');
+
+    var url = 'https://wa.me/523312345678?text=' + encodeURIComponent(msg);
+    window.open(url, '_blank');
+  }
+</script>
+</body>
+</html>
